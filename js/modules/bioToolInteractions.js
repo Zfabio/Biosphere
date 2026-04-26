@@ -156,7 +156,7 @@ function attachPunnettListeners() {
 }
 
 /**
- * DNA Translator Interaction Logic
+ * DNA Translator with Animated Codon-by-Codon Translation
  */
 function attachDNAListeners() {
   const dnaInput = document.getElementById("dna-input");
@@ -165,35 +165,119 @@ function attachDNAListeners() {
   const proteinDisplay = document.getElementById("protein-display");
   const clearBtn = document.getElementById("dna-clear");
   const sampleBtns = document.querySelectorAll(".bio-sample-btn");
+  const animateBtn = document.getElementById("dna-animate-btn");
+  const instantBtn = document.getElementById("dna-instant-btn");
+  const statusEl = document.getElementById("dna-anim-status");
 
   if (!dnaInput) return;
 
-  const update = () => {
-    const seq = dnaInput.value;
-    const result = translateNucleicAcid(seq);
+  let animTimer = null;
 
-    dnaDisplay.textContent = result.dna || "---";
-    rnaDisplay.textContent = result.rna || "---";
-    proteinDisplay.textContent = result.protein || "---";
+  const NUC_CLASS = { A: 'nuc-A', T: 'nuc-T', G: 'nuc-G', C: 'nuc-C', U: 'nuc-U' };
+
+  function colorNucs(seq, type) {
+    return seq.split('').map(n => `<span class="nuc ${NUC_CLASS[n] || ''}">${n}</span>`).join('');
+  }
+
+  function colorCodons(rna) {
+    const codons = rna.match(/.{1,3}/g) || [];
+    return codons.map((c, i) =>
+      `<span class="codon-group" data-idx="${i}">${c.split('').map(n => `<span class="nuc ${NUC_CLASS[n] || ''}">${n}</span>`).join('')}</span>`
+    ).join('');
+  }
+
+  const CODON_TABLE = {
+    'UUU':'Phe','UUC':'Phe','UUA':'Leu','UUG':'Leu','UCU':'Ser','UCC':'Ser','UCA':'Ser','UCG':'Ser',
+    'UAU':'Tyr','UAC':'Tyr','UAA':'STOP','UAG':'STOP','UGU':'Cys','UGC':'Cys','UGA':'STOP','UGG':'Trp',
+    'CUU':'Leu','CUC':'Leu','CUA':'Leu','CUG':'Leu','CCU':'Pro','CCC':'Pro','CCA':'Pro','CCG':'Pro',
+    'CAU':'His','CAC':'His','CAA':'Gln','CAG':'Gln','CGU':'Arg','CGC':'Arg','CGA':'Arg','CGG':'Arg',
+    'AUU':'Ile','AUC':'Ile','AUA':'Ile','AUG':'Met','ACU':'Thr','ACC':'Thr','ACA':'Thr','ACG':'Thr',
+    'AAU':'Asn','AAC':'Asn','AAA':'Lys','AAG':'Lys','AGU':'Ser','AGC':'Ser','AGA':'Arg','AGG':'Arg',
+    'GUU':'Val','GUC':'Val','GUA':'Val','GUG':'Val','GCU':'Ala','GCC':'Ala','GCA':'Ala','GCG':'Ala',
+    'GAU':'Asp','GAC':'Asp','GAA':'Glu','GAG':'Glu','GGU':'Gly','GGC':'Gly','GGA':'Gly','GGG':'Gly',
   };
 
-  dnaInput.addEventListener("input", update);
-  
+  function instantUpdate() {
+    if (animTimer) { clearInterval(animTimer); animTimer = null; }
+    const seq = dnaInput.value.toUpperCase().replace(/[^ATCG]/g, '');
+    const rna = seq.replace(/T/g, 'U');
+    dnaDisplay.innerHTML = colorNucs(seq) || '---';
+    rnaDisplay.innerHTML = colorCodons(rna) || '---';
+
+    const codons = rna.match(/.{1,3}/g) || [];
+    const chain = [];
+    for (const c of codons) {
+      if (c.length < 3) continue;
+      const aa = CODON_TABLE[c];
+      if (!aa) continue;
+      if (aa === 'STOP') { chain.push(`<span class="amino-pill stop">STOP</span>`); break; }
+      const cls = aa === 'Met' ? 'met' : 'normal';
+      chain.push(`<span class="amino-pill ${cls}">${aa}</span>`);
+    }
+    proteinDisplay.innerHTML = chain.join('') || '---';
+    if (statusEl) statusEl.textContent = '';
+  }
+
+  function animateTranslation() {
+    if (animTimer) { clearInterval(animTimer); animTimer = null; }
+    const seq = dnaInput.value.toUpperCase().replace(/[^ATCG]/g, '');
+    const rna = seq.replace(/T/g, 'U');
+    dnaDisplay.innerHTML = colorNucs(seq) || '---';
+    rnaDisplay.innerHTML = colorCodons(rna) || '---';
+    proteinDisplay.innerHTML = '';
+
+    const codons = rna.match(/.{1,3}/g) || [];
+    let idx = 0;
+
+    if (statusEl) statusEl.textContent = 'Translating...';
+
+    animTimer = setInterval(() => {
+      if (idx >= codons.length || codons[idx].length < 3) {
+        clearInterval(animTimer);
+        animTimer = null;
+        if (statusEl) statusEl.textContent = 'Translation complete ✓';
+        return;
+      }
+
+      // Highlight active codon
+      const groups = rnaDisplay.querySelectorAll('.codon-group');
+      groups.forEach(g => g.classList.remove('active'));
+      if (groups[idx]) groups[idx].classList.add('active');
+
+      const aa = CODON_TABLE[codons[idx]];
+      if (aa === 'STOP') {
+        proteinDisplay.innerHTML += `<span class="amino-pill stop" style="animation-delay: 0ms">STOP</span>`;
+        clearInterval(animTimer);
+        animTimer = null;
+        if (statusEl) statusEl.textContent = 'Stop codon reached ■';
+        return;
+      }
+      const cls = aa === 'Met' ? 'met' : 'normal';
+      proteinDisplay.innerHTML += `<span class="amino-pill ${cls}" style="animation-delay: 0ms">${aa || '?'}</span>`;
+      idx++;
+    }, 400);
+  }
+
+  if (animateBtn) animateBtn.addEventListener("click", animateTranslation);
+  if (instantBtn) instantBtn.addEventListener("click", instantUpdate);
+
+  dnaInput.addEventListener("input", instantUpdate);
+
   if (clearBtn) {
     clearBtn.addEventListener("click", () => {
       dnaInput.value = "";
-      update();
+      instantUpdate();
     });
   }
 
   sampleBtns.forEach(btn => {
     btn.addEventListener("click", () => {
       dnaInput.value = btn.dataset.seq;
-      update();
+      instantUpdate();
     });
   });
 
-  update();
+  instantUpdate();
 }
 
 /**
@@ -230,15 +314,105 @@ function attachBiomoleculeListeners() {
 }
 
 /**
- * Cell Simulator Placeholder Interaction
+ * Cell Simulator with Environment Sliders
  */
 function attachCellSimListeners() {
-  const organelles = document.querySelectorAll(".organelle");
-  organelles.forEach(org => {
-    org.addEventListener("click", () => {
-      org.style.transform = "scale(1.5)";
-      setTimeout(() => org.style.transform = "", 500);
-      // Future: Show info about the organelle
+  const tempSlider = document.getElementById("sim-temp");
+  const phSlider = document.getElementById("sim-ph");
+  const atpSlider = document.getElementById("sim-atp");
+  const tempVal = document.getElementById("temp-val");
+  const phVal = document.getElementById("ph-val");
+  const atpVal = document.getElementById("atp-val");
+  const viewport = document.getElementById("cell-sim-viewport");
+  const membrane = document.getElementById("cell-membrane");
+  const statusBadge = document.getElementById("cell-status");
+  const infoBar = document.getElementById("sim-info-bar");
+
+  const organelles = {
+    mito: document.getElementById("org-mito"),
+    er: document.getElementById("org-er"),
+    golgi: document.getElementById("org-golgi"),
+    lyso: document.getElementById("org-lyso"),
+    ribo: document.getElementById("org-ribo"),
+  };
+
+  if (!tempSlider || !phSlider || !atpSlider) return;
+
+  function evaluateCell() {
+    const temp = parseFloat(tempSlider.value);
+    const ph = parseFloat(phSlider.value);
+    const atp = parseFloat(atpSlider.value);
+
+    tempVal.textContent = Math.round(temp);
+    phVal.textContent = ph.toFixed(1);
+    atpVal.textContent = Math.round(atp);
+
+    // Calculate stress score (0 = perfect, higher = worse)
+    let stress = 0;
+    const tempDeviation = Math.abs(temp - 37);
+    const phDeviation = Math.abs(ph - 7.4);
+
+    stress += tempDeviation > 20 ? 3 : tempDeviation > 10 ? 2 : tempDeviation > 5 ? 1 : 0;
+    stress += phDeviation > 4 ? 3 : phDeviation > 2 ? 2 : phDeviation > 1 ? 1 : 0;
+    stress += atp < 10 ? 3 : atp < 30 ? 2 : atp < 50 ? 1 : 0;
+
+    // Determine cell state
+    const isDead = stress >= 7 || temp > 80 || temp < 5 || ph < 1 || ph > 13;
+    const isStressed = stress >= 3;
+
+    // Apply visual states
+    viewport.className = 'cell-sim-container' + (isDead ? ' dead' : isStressed ? ' stressed' : '');
+    membrane.className = 'cell-membrane' + (isDead ? ' dead' : isStressed ? ' stressed' : '');
+
+    if (isDead) {
+      statusBadge.textContent = 'CELL DEATH';
+      statusBadge.className = 'cell-status-badge critical';
+    } else if (isStressed) {
+      statusBadge.textContent = 'STRESSED';
+      statusBadge.className = 'cell-status-badge stressed';
+    } else {
+      statusBadge.textContent = 'HEALTHY';
+      statusBadge.className = 'cell-status-badge healthy';
+    }
+
+    // Organelle responses
+    Object.values(organelles).forEach(org => {
+      if (!org) return;
+      org.classList.remove('pulsing', 'degraded');
     });
-  });
+
+    if (isDead) {
+      Object.values(organelles).forEach(org => org && org.classList.add('degraded'));
+    } else {
+      // Mitochondria pulse with high ATP
+      if (atp > 60 && !isStressed && organelles.mito) organelles.mito.classList.add('pulsing');
+      // Low ATP degrades ER and Golgi
+      if (atp < 20) {
+        if (organelles.er) organelles.er.classList.add('degraded');
+        if (organelles.golgi) organelles.golgi.classList.add('degraded');
+      }
+      // Extreme pH degrades lysosomes
+      if (phDeviation > 3 && organelles.lyso) organelles.lyso.classList.add('degraded');
+      // High temp denatures ribosomes
+      if (temp > 60 && organelles.ribo) organelles.ribo.classList.add('degraded');
+    }
+
+    // Info chips
+    const proteinStatus = temp > 55 ? 'Denatured ⚠️' : temp > 42 ? 'Unstable' : 'Stable ✓';
+    const membraneStatus = ph < 2 || ph > 12 ? 'Lysed ⚠️' : isStressed ? 'Permeable' : 'Intact ✓';
+    const metabStatus = atp < 10 ? 'Shutdown ⚠️' : atp < 40 ? 'Reduced' : 'Active ✓';
+
+    if (infoBar) {
+      infoBar.innerHTML = `
+        <span class="sim-info-chip">Proteins: ${proteinStatus}</span>
+        <span class="sim-info-chip">Membrane: ${membraneStatus}</span>
+        <span class="sim-info-chip">Metabolism: ${metabStatus}</span>
+      `;
+    }
+  }
+
+  tempSlider.addEventListener("input", evaluateCell);
+  phSlider.addEventListener("input", evaluateCell);
+  atpSlider.addEventListener("input", evaluateCell);
+  evaluateCell();
 }

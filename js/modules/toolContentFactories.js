@@ -102,105 +102,73 @@ function generateDNATranslatorContent() {
   return `
     <div class="bio-tool-wrapper">
         <style>
-            .sequence-input-area {
-                background: white;
-                padding: 24px;
-                border-radius: 20px;
-                box-shadow: 0 8px 32px rgba(0,0,0,0.05);
-                border: 1px solid #e2e8f0;
-            }
-            .sequence-input-area label {
-                display: block;
-                margin-bottom: 12px;
-                font-weight: 700;
-                color: #1e293b;
-                font-size: 0.95rem;
-            }
-            .sequence-textarea {
-                width: 100%;
-                height: 120px;
-                padding: 16px;
-                border-radius: 14px;
-                border: 2px solid #e2e8f0;
-                font-family: 'SF Mono', monospace;
-                font-size: 1.1rem;
-                resize: none;
-                transition: all 0.2s;
-                letter-spacing: 0.1em;
-                text-transform: uppercase;
-            }
-            .sequence-textarea:focus {
-                border-color: #3b82f6;
-                outline: none;
-                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-            }
-            .translation-flow {
-                display: flex;
-                flex-direction: column;
-                gap: 20px;
-            }
-            .flow-step {
-                background: #f8fafc;
-                padding: 16px;
-                border-radius: 16px;
-                border: 1px solid #f1f5f9;
-                position: relative;
-            }
+            .sequence-input-area { background: white; padding: 24px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+            .sequence-input-area label { display: block; margin-bottom: 12px; font-weight: 700; color: #1e293b; font-size: 0.95rem; }
+            .sequence-textarea { width: 100%; height: 100px; padding: 16px; border-radius: 14px; border: 2px solid #e2e8f0; font-family: 'SF Mono', monospace; font-size: 1.1rem; resize: none; transition: all 0.2s; letter-spacing: 0.1em; text-transform: uppercase; }
+            .sequence-textarea:focus { border-color: #3b82f6; outline: none; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+            .translation-flow { display: flex; flex-direction: column; gap: 16px; }
+            .flow-step { background: #f8fafc; padding: 16px; border-radius: 16px; border: 1px solid #f1f5f9; position: relative; overflow: hidden; }
             .flow-step.dna { border-left: 6px solid #3b82f6; }
             .flow-step.rna { border-left: 6px solid #fbbf24; }
             .flow-step.protein { border-left: 6px solid #ef4444; }
-            
-            .step-header {
-                font-size: 0.75rem;
-                font-weight: 800;
-                color: #64748b;
-                margin-bottom: 8px;
-                text-transform: uppercase;
-                letter-spacing: 0.1em;
-            }
-            .step-content {
-                font-family: 'SF Mono', monospace;
-                font-size: 0.95rem;
-                word-break: break-all;
-                line-height: 1.6;
-                color: #1e293b;
-            }
-            .codon-marker {
-                display: inline-block;
-                padding: 2px 4px;
-                border-radius: 4px;
-                margin: 0 1px;
-                background: rgba(0,0,0,0.03);
-            }
+            .step-header { font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.1em; }
+            .step-content { font-family: 'SF Mono', monospace; font-size: 0.95rem; word-break: break-all; line-height: 1.8; color: #1e293b; min-height: 24px; }
+            .nuc { display: inline-block; padding: 2px 3px; border-radius: 4px; margin: 1px; font-weight: 600; transition: all 0.3s; }
+            .nuc-A { background: #dbeafe; color: #1e40af; }
+            .nuc-T { background: #fef3c7; color: #92400e; }
+            .nuc-G { background: #d1fae5; color: #065f46; }
+            .nuc-C { background: #fce7f3; color: #9d174d; }
+            .nuc-U { background: #fef3c7; color: #78350f; border: 1px dashed #f59e0b; }
+            .codon-group { display: inline-flex; margin: 2px 4px 2px 0; padding: 2px; border-radius: 6px; background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); }
+            .codon-group.active { background: rgba(59, 130, 246, 0.1); border-color: #3b82f6; animation: codonPulse 0.6s ease; }
+            @keyframes codonPulse { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+            .amino-pill { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin: 2px; animation: aminoDrop 0.4s ease-out backwards; }
+            .amino-pill.met { background: #10b981; color: white; }
+            .amino-pill.stop { background: #ef4444; color: white; }
+            .amino-pill.normal { background: #e0e7ff; color: #3730a3; }
+            @keyframes aminoDrop { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+            .anim-controls { display: flex; gap: 10px; margin-top: 12px; align-items: center; }
+            .anim-btn { padding: 10px 20px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 0.85rem; }
+            .anim-btn.primary { background: #3b82f6; color: white; }
+            .anim-btn.primary:hover { background: #2563eb; }
+            .anim-btn.secondary { background: #f1f5f9; color: #475569; }
+            .anim-speed { font-size: 0.75rem; color: #94a3b8; margin-left: auto; }
         </style>
         
         <div class="tool-header-info">
             <h2>DNA-to-Protein Translator</h2>
-            <p>Convert DNA sequences into mRNA and translate them into amino acid chains.</p>
+            <p>Visualize transcription & translation step-by-step.</p>
         </div>
 
         <div class="sequence-input-area">
             <label>Input DNA Sequence (5' → 3')</label>
-            <textarea id="dna-input" class="sequence-textarea" placeholder="ATG..."></textarea>
-            <div style="margin-top: 12px; display: flex; gap: 8px;">
-                <button class="balancer-btn bio-sample-btn" data-seq="ATGGCCATTGTAATGGCCGCT">Sample DNA</button>
+            <textarea id="dna-input" class="sequence-textarea" placeholder="ATGGCCATTGTAATG..."></textarea>
+            <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="balancer-btn bio-sample-btn" data-seq="ATGGCCATTGTAATGGCCGCTTAGACC">Sample Gene</button>
+                <button class="balancer-btn bio-sample-btn" data-seq="ATGTTTAAAGGTCTTTGA">Short Peptide</button>
                 <button class="balancer-btn bio-clear-btn" id="dna-clear">Clear</button>
             </div>
         </div>
 
+        <div class="anim-controls">
+            <button class="anim-btn primary" id="dna-animate-btn">▶ Animate Translation</button>
+            <button class="anim-btn secondary" id="dna-instant-btn">⚡ Instant</button>
+            <span class="anim-speed" id="dna-anim-status"></span>
+        </div>
+
         <div class="translation-flow">
             <div class="flow-step dna">
-                <div class="step-header">Coding DNA (5' → 3')</div>
+                <div class="step-header">Coding DNA Strand (5' → 3')</div>
                 <div class="step-content" id="dna-display">---</div>
             </div>
-            <div class="flow-arrow" style="text-align: center; color: #cbd5e1;">↓</div>
+            <div class="flow-arrow" style="text-align: center; color: #cbd5e1; font-size: 1.2rem;">⬇ Transcription</div>
             <div class="flow-step rna">
                 <div class="step-header">mRNA Transcript</div>
                 <div class="step-content" id="rna-display">---</div>
             </div>
-            <div class="flow-arrow" style="text-align: center; color: #cbd5e1;">↓</div>
+            <div class="flow-arrow" style="text-align: center; color: #cbd5e1; font-size: 1.2rem;">⬇ Translation (Ribosome)</div>
             <div class="flow-step protein">
-                <div class="step-header">Protein Sequence</div>
+                <div class="step-header">Polypeptide Chain</div>
                 <div class="step-content" id="protein-display">---</div>
             </div>
         </div>
@@ -323,125 +291,83 @@ function generateCellSimulatorContent() {
   return `
     <div class="bio-tool-wrapper">
         <style>
-            .cell-sim-container {
-                background: radial-gradient(circle at center, #f0fdf4 0%, #dcfce7 100%);
-                border-radius: 24px;
-                aspect-ratio: 16/9;
-                position: relative;
-                overflow: hidden;
-                border: 2px solid #86efac;
-                box-shadow: inset 0 0 60px rgba(0,0,0,0.05);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .cell-membrane {
-                width: 60%;
-                height: 70%;
-                background: rgba(255, 255, 255, 0.4);
-                border: 4px solid #10b981;
-                border-radius: 40% 60% 70% 30% / 50% 40% 60% 50%;
-                position: relative;
-                animation: fluidWobble 10s infinite ease-in-out;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                backdrop-filter: blur(4px);
-            }
-            .nucleus {
-                width: 30%;
-                height: 35%;
-                background: #6366f1;
-                border-radius: 50%;
-                border: 2px solid #4338ca;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-            }
-            .nucleolus {
-                width: 40%;
-                height: 40%;
-                background: #312e81;
-                border-radius: 50%;
-            }
-            .organelle {
-                position: absolute;
-                background: #fbbf24;
-                border-radius: 10px;
-                padding: 4px 8px;
-                font-size: 0.6rem;
-                font-weight: 800;
-                color: white;
-                cursor: pointer;
-                transition: transform 0.2s;
-            }
+            .cell-sim-container { background: radial-gradient(circle at center, #f0fdf4 0%, #dcfce7 100%); border-radius: 24px; aspect-ratio: 16/9; position: relative; overflow: hidden; border: 2px solid #86efac; box-shadow: inset 0 0 60px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; transition: all 0.5s ease; min-height: 280px; }
+            .cell-sim-container.stressed { background: radial-gradient(circle at center, #fef2f2 0%, #fee2e2 100%); border-color: #fca5a5; }
+            .cell-sim-container.dead { background: radial-gradient(circle at center, #1e1e1e 0%, #111 100%); border-color: #444; }
+            .cell-membrane { width: 60%; height: 70%; background: rgba(255, 255, 255, 0.4); border: 4px solid #10b981; border-radius: 40% 60% 70% 30% / 50% 40% 60% 50%; position: relative; animation: fluidWobble 10s infinite ease-in-out; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: all 0.5s ease; }
+            .cell-membrane.stressed { border-color: #f59e0b; animation-duration: 4s; }
+            .cell-membrane.dead { border-color: #666; opacity: 0.4; animation: none; border-style: dashed; }
+            .nucleus { width: 30%; height: 35%; background: #6366f1; border-radius: 50%; border: 2px solid #4338ca; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); transition: all 0.5s; }
+            .nucleolus { width: 40%; height: 40%; background: #312e81; border-radius: 50%; transition: all 0.5s; }
+            .organelle { position: absolute; border-radius: 10px; padding: 4px 8px; font-size: 0.6rem; font-weight: 800; color: white; cursor: pointer; transition: all 0.4s ease; }
             .organelle:hover { transform: scale(1.1); z-index: 10; }
-            
-            @keyframes fluidWobble {
-                0%, 100% { border-radius: 40% 60% 70% 30% / 50% 40% 60% 50%; }
-                33% { border-radius: 60% 40% 50% 50% / 40% 60% 40% 60%; }
-                66% { border-radius: 50% 50% 40% 60% / 60% 40% 60% 40%; }
-            }
-            
-            .sim-controls {
-                display: grid;
-                grid-template-columns: repeat(4, 1fr);
-                gap: 12px;
-                margin-top: 20px;
-            }
-            .control-btn {
-                padding: 10px;
-                border-radius: 12px;
-                border: 1px solid #e2e8f0;
-                background: white;
-                cursor: pointer;
-                font-size: 0.8rem;
-                font-weight: 600;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 4px;
-            }
-            .control-btn i { font-size: 1.2rem; }
-            .control-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
+            .organelle.pulsing { animation: orgPulse 1s infinite ease-in-out; }
+            .organelle.degraded { opacity: 0.3; filter: grayscale(1); transform: scale(0.7); }
+            @keyframes orgPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+            @keyframes fluidWobble { 0%, 100% { border-radius: 40% 60% 70% 30% / 50% 40% 60% 50%; } 33% { border-radius: 60% 40% 50% 50% / 40% 60% 40% 60%; } 66% { border-radius: 50% 50% 40% 60% / 60% 40% 60% 40%; } }
+            .cell-status-badge { position: absolute; top: 16px; right: 16px; padding: 6px 16px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; color: white; z-index: 5; transition: all 0.3s; }
+            .cell-status-badge.healthy { background: #10b981; }
+            .cell-status-badge.stressed { background: #f59e0b; }
+            .cell-status-badge.critical { background: #ef4444; animation: badgePulse 1s infinite; }
+            @keyframes badgePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+            .env-sliders { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
+            .slider-card { background: white; padding: 16px; border-radius: 16px; border: 1px solid #f1f5f9; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+            .slider-label { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+            .slider-value { font-size: 1.6rem; font-weight: 800; color: #1e293b; margin-bottom: 8px; }
+            .slider-value .unit { font-size: 0.8rem; font-weight: 600; color: #94a3b8; }
+            .env-slider { width: 100%; -webkit-appearance: none; height: 6px; border-radius: 3px; background: #e2e8f0; outline: none; }
+            .env-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+            .slider-card.temp .env-slider::-webkit-slider-thumb { background: #ef4444; }
+            .slider-card.ph .env-slider::-webkit-slider-thumb { background: #8b5cf6; }
+            .slider-card.atp .env-slider::-webkit-slider-thumb { background: #10b981; }
+
+            .sim-info-bar { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+            .sim-info-chip { padding: 8px 14px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; background: #f8fafc; border: 1px solid #e2e8f0; color: #475569; }
+            @media (max-width: 640px) { .env-sliders { grid-template-columns: 1fr; } }
         </style>
 
         <div class="tool-header-info">
             <h2>Interactive Cell Simulator</h2>
-            <p>Explore the inner workings of a eukaryotic cell and its organelles.</p>
+            <p>Adjust environmental conditions and observe how the cell responds in real time.</p>
         </div>
 
-        <div class="cell-sim-container">
-            <div class="cell-membrane">
-                <div class="nucleus">
+        <div class="cell-sim-container" id="cell-sim-viewport">
+            <div class="cell-status-badge healthy" id="cell-status">HEALTHY</div>
+            <div class="cell-membrane" id="cell-membrane">
+                <div class="nucleus" id="sim-nucleus">
                     <div class="nucleolus"></div>
                 </div>
-                <!-- Random Organelles -->
-                <div class="organelle" style="top: 20%; left: 10%; background: #ef4444;">Mito</div>
-                <div class="organelle" style="bottom: 25%; right: 15%; background: #10b981;">ER</div>
-                <div class="organelle" style="top: 15%; right: 20%; background: #f59e0b;">Golgi</div>
-                <div class="organelle" style="bottom: 10%; left: 20%; background: #3b82f6;">Lys</div>
+                <div class="organelle pulsing" id="org-mito" style="top: 20%; left: 10%; background: #ef4444;">Mito</div>
+                <div class="organelle" id="org-er" style="bottom: 25%; right: 15%; background: #10b981;">ER</div>
+                <div class="organelle" id="org-golgi" style="top: 15%; right: 20%; background: #f59e0b;">Golgi</div>
+                <div class="organelle" id="org-lyso" style="bottom: 10%; left: 20%; background: #3b82f6;">Lyso</div>
+                <div class="organelle" id="org-ribo" style="top: 60%; left: 65%; background: #8b5cf6;">Ribo</div>
             </div>
         </div>
 
-        <div class="sim-controls">
-            <button class="control-btn">
-                <span>Microtubules</span>
-                <span style="font-size: 0.6rem; color: #94a3b8;">Show/Hide</span>
-            </button>
-            <button class="control-btn">
-                <span>Metabolism</span>
-                <span style="font-size: 0.6rem; color: #94a3b8;">ATP Flow</span>
-            </button>
-            <button class="control-btn">
-                <span>Division</span>
-                <span style="font-size: 0.6rem; color: #94a3b8;">Mitosis</span>
-            </button>
-            <button class="control-btn">
-                <span>Signal</span>
-                <span style="font-size: 0.6rem; color: #94a3b8;">Trigger</span>
-            </button>
+        <div class="env-sliders">
+            <div class="slider-card temp">
+                <div class="slider-label">🌡️ Temperature</div>
+                <div class="slider-value"><span id="temp-val">37</span><span class="unit">°C</span></div>
+                <input type="range" class="env-slider" id="sim-temp" min="0" max="100" value="37">
+            </div>
+            <div class="slider-card ph">
+                <div class="slider-label">⚗️ pH Level</div>
+                <div class="slider-value"><span id="ph-val">7.0</span><span class="unit">pH</span></div>
+                <input type="range" class="env-slider" id="sim-ph" min="0" max="14" value="7" step="0.1">
+            </div>
+            <div class="slider-card atp">
+                <div class="slider-label">⚡ ATP / Nutrients</div>
+                <div class="slider-value"><span id="atp-val">80</span><span class="unit">%</span></div>
+                <input type="range" class="env-slider" id="sim-atp" min="0" max="100" value="80">
+            </div>
+        </div>
+
+        <div class="sim-info-bar" id="sim-info-bar">
+            <span class="sim-info-chip">Proteins: Stable</span>
+            <span class="sim-info-chip">Membrane: Intact</span>
+            <span class="sim-info-chip">Metabolism: Active</span>
         </div>
     </div>
   `;
