@@ -1361,6 +1361,8 @@ function setupL3UnitConversion(blueCard, rawData, extData) {
       setTimeout(() => { newItem.style.transform = "scale(1)"; }, 150);
     });
   });
+}
+
 // ===== Biological View Population =====
 function populateBioView(bioEntry) {
   const setText = (selector, text) => {

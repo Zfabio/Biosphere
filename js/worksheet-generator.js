@@ -520,47 +520,6 @@ function shuffleArray(array) {
 function exportToPDF() {
     if (!currentWorksheet) return;
 
-    const title = tr('BioSphere — Biology Concept Review', 'BioSphere — 生物概念複習');
-    const keyTitle = tr('Answer Key (Teacher Use Only)', '答案页（仅供教师使用）');
-
-    // Generate Worksheet & Answer Key Content
-    let worksheetHtml = '';
-    let answerKeyHtml = '';
-    currentWorksheet.questions.forEach((q, index) => {
-        const num = index + 1;
-        worksheetHtml += `
-            <div class="question-row">
-                <div class="q-num">${num}.</div>
-                <div class="q-bio">${formatQuestionForPDF(q, false)}</div>
-            </div>`;
-        answerKeyHtml += `
-            <div class="question-row answer-row">
-                <div class="q-num">${num}.</div>
-                <div class="q-bio">${formatQuestionForPDF(q, true)}</div>
-            </div>`;
-    });
-
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>&nbsp;</title>
-    <style>
-        /* Force remove browser headers/footers */
-        @page {
-            margin: 0;
-            size: A4 portrait;
-        }
-
-        * { box-sizing: border-box; }
-        html, body {
-            margin: 0;
-            padding: 0;
-// PDF Export logic
-function exportToPDF() {
-    if (!currentWorksheet) return;
-
     const lang = document.documentElement.lang || 'en';
     const title = tr('Biology Concept Review', '生物概念複習');
     const keyTitle = tr('Answer Key', '答案');
