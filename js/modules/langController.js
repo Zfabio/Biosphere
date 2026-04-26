@@ -107,14 +107,6 @@ export async function fetchIonLocale(langCode) {
 }
 
 function invalidateLocalizedCaches() {
-  import("./chemToolContent.js")
-    .then((module) => {
-      module.invalidateChemToolContentCache?.();
-    })
-    .catch(() => {
-      // Cache invalidation is best-effort and should never block language switching.
-    });
-
   // Call all registered cache cleanup functions
   cacheCleanupFns.forEach(fn => {
     try {
