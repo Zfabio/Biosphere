@@ -116,6 +116,97 @@ export function calculatePunnettSquare(parent1Alleles, parent2Alleles) {
 }
 
 /**
+ * Dihybrid Punnett Square logic (2 traits, 4x4 grid)
+ * Input: parent genotypes like "AaBb"
+ */
+export function calculateDihybridSquare(parent1, parent2) {
+    if (!parent1 || !parent2) return null;
+
+    const p1 = parent1.replace(/[^A-Za-z]/g, '');
+    const p2 = parent2.replace(/[^A-Za-z]/g, '');
+
+    if (p1.length < 4 || p2.length < 4) return null;
+
+    // Extract allele pairs: AaBb -> [A,a] and [B,b]
+    const p1Trait1 = [p1[0], p1[1]];
+    const p1Trait2 = [p1[2], p1[3]];
+    const p2Trait1 = [p2[0], p2[1]];
+    const p2Trait2 = [p2[2], p2[3]];
+
+    // Generate gametes via independent assortment
+    function makeGametes(t1, t2) {
+        return [
+            t1[0] + t2[0],
+            t1[0] + t2[1],
+            t1[1] + t2[0],
+            t1[1] + t2[1],
+        ];
+    }
+
+    const gametes1 = makeGametes(p1Trait1, p1Trait2);
+    const gametes2 = makeGametes(p2Trait1, p2Trait2);
+
+    // Sort a genotype so dominant alleles come first per trait
+    function sortGenotype(a1, a2, b1, b2) {
+        const sortPair = (x, y) => {
+            if (x === x.toUpperCase() && y !== y.toUpperCase()) return x + y;
+            if (y === y.toUpperCase() && x !== x.toUpperCase()) return y + x;
+            return x + y;
+        };
+        return sortPair(a1, a2) + sortPair(b1, b2);
+    }
+
+    // Build 4x4 grid
+    const grid = [];
+    for (let i = 0; i < 4; i++) {
+        const row = [];
+        for (let j = 0; j < 4; j++) {
+            const g1 = gametes1[j]; // columns
+            const g2 = gametes2[i]; // rows
+            const geno = sortGenotype(g1[0], g2[0], g1[1], g2[1]);
+            row.push(geno);
+        }
+        grid.push(row);
+    }
+
+    // Count genotypes
+    const flat = grid.flat();
+    const counts = {};
+    flat.forEach(g => counts[g] = (counts[g] || 0) + 1);
+
+    // Calculate phenotype
+    function getPhenotype(geno) {
+        const t1Dom = geno[0] === geno[0].toUpperCase();
+        const t2Dom = geno[2] === geno[2].toUpperCase();
+        if (t1Dom && t2Dom) return "Both Dominant";
+        if (t1Dom && !t2Dom) return "Trait 1 Dom";
+        if (!t1Dom && t2Dom) return "Trait 2 Dom";
+        return "Both Recessive";
+    }
+
+    const phenoCounts = {};
+    flat.forEach(g => {
+        const p = getPhenotype(g);
+        phenoCounts[p] = (phenoCounts[p] || 0) + 1;
+    });
+
+    const stats = Object.entries(counts).map(([genotype, count]) => ({
+        genotype,
+        count,
+        percentage: ((count / 16) * 100).toFixed(1),
+        phenotype: getPhenotype(genotype)
+    }));
+
+    const phenoStats = Object.entries(phenoCounts).map(([phenotype, count]) => ({
+        phenotype,
+        count,
+        ratio: count
+    }));
+
+    return { grid, stats, phenoStats, gametes1, gametes2 };
+}
+
+/**
  * DNA/RNA Translation
  */
 export function translateNucleicAcid(sequence) {
