@@ -7,6 +7,7 @@ import { onLangChange } from "./langController.js";
 export function initPageController(options = {}) {
   const {
     onTablePageShown,
+    onTaxonomyPageShown,
     onIonsPageShown,
     onToolsPageShown,
     onWorksheetPageShown,
@@ -17,6 +18,7 @@ export function initPageController(options = {}) {
   const blankPage1 = document.getElementById("blank-page-1");
   const blankPage2 = document.getElementById("blank-page-2");
   const ionsPage = document.getElementById("ions-page");
+  const taxonomyPage = document.getElementById("taxonomy-page");
   const settingsPage = document.getElementById("settings-page");
 
   let currentPage = "table";
@@ -27,6 +29,9 @@ export function initPageController(options = {}) {
     },
     ions: () => {
       if (ionsPage) ionsPage.classList.add("active");
+    },
+    taxonomy: () => {
+      if (taxonomyPage) taxonomyPage.classList.add("active");
     },
     blank1: () => {
       if (blankPage1) blankPage1.classList.add("active");
@@ -44,6 +49,7 @@ export function initPageController(options = {}) {
     if (blankPage1) blankPage1.classList.remove("active");
     if (blankPage2) blankPage2.classList.remove("active");
     if (ionsPage) ionsPage.classList.remove("active");
+    if (taxonomyPage) taxonomyPage.classList.remove("active");
     if (settingsPage) settingsPage.classList.remove("active");
   }
 
@@ -60,6 +66,10 @@ export function initPageController(options = {}) {
 
     if (page === "ions" && typeof onIonsPageShown === "function") {
       onIonsPageShown();
+    }
+    
+    if (page === "taxonomy" && typeof onTaxonomyPageShown === "function") {
+      onTaxonomyPageShown();
     }
 
     if (page === "blank1" && typeof onToolsPageShown === "function") {
@@ -78,6 +88,7 @@ export function initPageController(options = {}) {
   const globalNavBtns = document.querySelectorAll(".nav-pill-btn, .nav-logo-link, .nav-brand");
   const navPageMap = {
     table: "table",
+    taxonomy: "taxonomy",
     ions: "ions",
     tools: "blank1",
     worksheet: "blank2",

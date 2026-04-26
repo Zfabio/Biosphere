@@ -1381,9 +1381,20 @@ function populateBioView(bioEntry) {
   // Level 1: Basic (Green)
   const l1 = bioEntry.level1_basic || {};
   setText("#l1-type-value", bioEntry.category || bioEntry.type || "Unknown");
-  setText("#l1-group-period-value", l1.location || "Cell");
-  setText("#l1-phase-value", "Active");
+  // Change label if it's a species
+  const locationLabel = document.querySelector("#l1-group-period-label");
+  if (locationLabel) {
+    locationLabel.textContent = bioEntry.scientificName ? "Habitat / Area" : "Location";
+  }
+  setText("#l1-group-period-value", l1.location || l1.habitat || "Global");
+  setText("#l1-phase-value", "Active species");
   setText("#l1-electron-block-value", bioEntry.symbol.charAt(0));
+
+  // If scientific name exists, add it to the name field
+  if (bioEntry.scientificName) {
+      const nameEl = document.querySelector("#headline-name");
+      if (nameEl) nameEl.innerHTML = `${bioEntry.name} <span style="font-size: 0.6em; opacity: 0.7; font-style: italic; display: block;">${bioEntry.scientificName}</span>`;
+  }
 
   // Description in L1 is better suited for the formation text area
   const formationText = document.querySelector(".ion-formation-text");
@@ -1465,7 +1476,22 @@ function populateBioView(bioEntry) {
   }
 
   // Visual Pane: Refresh 3D (if I have bio structures)
-  updateBioStructure(bioEntry);
+  if (bioEntry.type === "Organelle" || !bioEntry.image) {
+      updateBioStructure(bioEntry);
+  } else {
+      // For taxonomy, we show the image
+      const container = document.getElementById("canvas-container");
+      if (container) {
+          container.innerHTML = `<img src="${bioEntry.image}" style="width: 100%; height: 100%; object-fit: contain; animation: fadeIn 0.5s ease-out;">`;
+      }
+  }
+}
+
+export function openBioModal(entry) {
+  if (!modal) initModalUI();
+  populateBioView(entry);
+  modal.classList.add("open");
+  document.body.classList.add("modal-open");
 }
 
 // ===== Simplified View Population =====

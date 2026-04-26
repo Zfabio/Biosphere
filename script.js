@@ -87,6 +87,7 @@ window._bioAnimSpeed = savedAnimationState.speed;
 // ========================================
 const lazyScriptPromises = new Map();
 let ionsTableReady = false;
+let taxonomyReady = false;
 let worksheetReady = false;
 let heroAtomModulePromise = null;
 
@@ -111,6 +112,13 @@ async function ensureIonsTableReady() {
   const { initIonsTable } = await import("./js/modules/ionsController.js");
   await initIonsTable();
   ionsTableReady = true;
+}
+
+async function ensureTaxonomyReady() {
+  if (taxonomyReady) return;
+  const { initTaxonomyAtlas } = await import("./js/modules/taxonomyController.js");
+  await initTaxonomyAtlas();
+  taxonomyReady = true;
 }
 
 async function ensureWorksheetReady() {
@@ -639,6 +647,11 @@ function bootstrapApp() {
       onIonsPageShown: () => {
         void ensureIonsTableReady().catch((e) =>
           console.error("Ions lazy init error:", e),
+        );
+      },
+      onTaxonomyPageShown: () => {
+        void ensureTaxonomyReady().catch((e) =>
+          console.error("Taxonomy lazy init error:", e),
         );
       },
       onToolsPageShown: () => {
