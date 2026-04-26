@@ -18,7 +18,7 @@ import { bioData } from "../data/bioData.js";
 import { finallyData } from "../data/elementsData.js";
 import { initCardSlider } from "./cardSliderController.js";
 import { createEITController } from "./ui/eitController.js";
-import { initElementTutorial } from "./tutorialController.js";
+import { initOrganelleTutorial } from "./tutorialController.js";
 import {
   t,
   onLangChange,
@@ -2648,7 +2648,7 @@ export function showModal(element) {
     );
   }
   modal.classList.add("active");
-  initElementTutorial();
+  initOrganelleTutorial();
   document.title = `BioSphere - ${localizeElementName(element)}`;
   document.body.classList.add("hide-nav");
   if (isSimplifiedView) {
@@ -2928,7 +2928,7 @@ export function initModalUI() {
   const tutorialBtn = document.getElementById("element-tutorial-btn");
   if (tutorialBtn) {
     tutorialBtn.addEventListener("click", () => {
-      initElementTutorial(true); // pass true to force the tutorial
+      initOrganelleTutorial(true); // pass true to force the tutorial
     });
   }
 

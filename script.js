@@ -655,7 +655,7 @@ function bootstrapApp() {
         );
       },
       onToolsPageShown: () => {
-        setTimeout(() => toolsModalController.initChemToolCards(), 100);
+        setTimeout(() => toolsModalController.initBioToolCards(), 100);
       },
       onWorksheetPageShown: () => {
         void ensureWorksheetReady().catch((error) =>
@@ -691,7 +691,7 @@ function bootstrapApp() {
       setGlobalUnit,
     });
 
-    // Initialize mascot chemistry assistant
+    // Initialize mascot biology assistant
     initMascotController();
   } catch (err) {
     console.error("BioSphere: Bootstrap Error:", err);

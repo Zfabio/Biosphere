@@ -6,7 +6,7 @@ export const taxonomyData = {
     "scientificName": "Balaenoptera musculus",
     "category": "Mammalia",
     "symbol": "Bw",
-    "type": "Animal",
+    "type": "Animalia",
     "level1_basic": {
       "habitat": "Ocean",
       "location": "Global",
@@ -41,7 +41,7 @@ export const taxonomyData = {
     "scientificName": "Panthera tigris tigris",
     "category": "Mammalia",
     "symbol": "Bt",
-    "type": "Animal",
+    "type": "Animalia",
     "level1_basic": {
       "habitat": "Jungle / Grasslands",
       "location": "Asia",
@@ -60,7 +60,7 @@ export const taxonomyData = {
       },
       "commonUses": ["Keystone species", "Cultural icon"]
     },
-    "image": "images/taxa-animalia.png"
+    "image": "images/taxa-tiger.png"
   },
   "ani_falcon": {
     "id": 1103,
@@ -68,7 +68,7 @@ export const taxonomyData = {
     "scientificName": "Falco peregrinus",
     "category": "Aves",
     "symbol": "Pf",
-    "type": "Animal",
+    "type": "Animalia",
     "level1_basic": {
       "habitat": "Cliffs / Skyscrapers",
       "location": "Global",
@@ -82,15 +82,35 @@ export const taxonomyData = {
     },
     "image": "images/taxa-falcon.png"
   },
+  "ani_shark": {
+    "id": 1105,
+    "name": "Great White Shark",
+    "scientificName": "Carcharodon carcharias",
+    "category": "Chondrichthyes",
+    "symbol": "Ws",
+    "type": "Animalia",
+    "level1_basic": {
+      "habitat": "Coastal Waters",
+      "location": "Global",
+      "description": "A large lamniform shark and a notable apex predator of ocean surface waters.",
+      "summary": "Apex ocean predator, cartilaginous."
+    },
+    "level2_biological": {
+      "composition": "Cartilaginous Fish",
+      "size": "4.5–6.0 meters",
+      "components": ["Serrated teeth", "Lateral line", "Gills"]
+    },
+    "image": "images/taxa-shark.png"
+  },
 
   // --- KINGDOM PLANTAE ---
   "pla_oak": {
     "id": 1201,
     "name": "White Oak",
     "scientificName": "Quercus alba",
-    "category": "Pinopsida",
+    "category": "Plantae",
     "symbol": "Wo",
-    "type": "Plant",
+    "type": "Plantae",
     "level1_basic": {
       "habitat": "Forests",
       "location": "North America",
@@ -102,7 +122,27 @@ export const taxonomyData = {
       "size": "20–30 meters",
       "components": ["Acorns", "Lobed leaves", "Deep roots"]
     },
-    "image": "images/taxa-plantae.png"
+    "image": "images/taxa-oak.png"
+  },
+  "pla_venus": {
+    "id": 1203,
+    "name": "Venus Flytrap",
+    "scientificName": "Dionaea muscipula",
+    "category": "Plantae",
+    "symbol": "Vf",
+    "type": "Plantae",
+    "level1_basic": {
+      "habitat": "Wetlands",
+      "location": "United States",
+      "description": "A carnivorous plant that catches and digests insects using a snap-trap mechanism.",
+      "summary": "Carnivorous plant, active trap."
+    },
+    "level2_biological": {
+      "composition": "Herbaceous, Carnivorous",
+      "size": "Compact rosette",
+      "components": ["Sensitive hairs", "Snap lobes", "Digestive enzymes"]
+    },
+    "image": "images/taxa-venus.png"
   },
 
   // --- KINGDOM FUNGI ---
@@ -110,13 +150,13 @@ export const taxonomyData = {
     "id": 1301,
     "name": "Fly Agaric",
     "scientificName": "Amanita muscaria",
-    "category": "Agaricomycetes",
+    "category": "Fungi",
     "symbol": "Am",
     "type": "Fungi",
     "level1_basic": {
       "habitat": "Coniferous Forests",
       "location": "Northern Hemisphere",
-      "description": "An iconic mushroom characterized by its bright red cap with white spots. It is poisonous and psychoactive.",
+      "description": "An iconic mushroom characterized by its bright red cap with white spots.",
       "summary": "Iconic toadstool, mycorrhizal."
     },
     "level2_biological": {
@@ -124,7 +164,27 @@ export const taxonomyData = {
       "size": "Cap 8–20 cm",
       "components": ["Red cap", "White gills", "Volva/Stalk"]
     },
-    "image": "images/taxa-fungi.png"
+    "image": "images/taxa-mushrooms.png"
+  },
+  "fun_yeast": {
+    "id": 1302,
+    "name": "Baker's Yeast",
+    "scientificName": "Saccharomyces cerevisiae",
+    "category": "Fungi",
+    "symbol": "Sc",
+    "type": "Fungi",
+    "level1_basic": {
+      "habitat": "Fruit skins / Soil",
+      "location": "Global",
+      "description": "A species of yeast used in baking and brewing. It is a model organism in modern cell biology.",
+      "summary": "Unicellular fungus, fermentation."
+    },
+    "level2_biological": {
+      "composition": "Ascomycete",
+      "size": "5–10 μm",
+      "components": ["Cell wall (Chitin)", "Vacuole", "Bud scars"]
+    },
+    "image": "images/taxa-yeast.png"
   },
 
   // --- KINGDOM MONERA (BACTERIA) ---
@@ -132,13 +192,13 @@ export const taxonomyData = {
     "id": 1401,
     "name": "E. coli",
     "scientificName": "Escherichia coli",
-    "category": "Proteobacteria",
+    "category": "Monera",
     "symbol": "Ec",
-    "type": "Bacteria",
+    "type": "Monera",
     "level1_basic": {
       "habitat": "Intestines / Soil",
       "location": "Global",
-      "description": "A Gram-negative, rod-shaped bacterium. While most strains are harmless, some can cause severe food poisoning.",
+      "description": "A Gram-negative, rod-shaped bacterium found in the bottom of the warm-blooded organism.",
       "summary": "Model organism, gut bacteria."
     },
     "level2_biological": {
@@ -146,7 +206,7 @@ export const taxonomyData = {
       "size": "1.0–2.0 μm",
       "components": ["Flagella", "Pili", "Plasmid DNA"]
     },
-    "image": "images/taxa-bacteria.png" // Path placeholder
+    "image": "images/taxa-bacteria.png"
   },
 
   // --- KINGDOM PROTISTA ---
@@ -154,13 +214,13 @@ export const taxonomyData = {
     "id": 1501,
     "name": "Amoeba",
     "scientificName": "Amoeba proteus",
-    "category": "Tubulinea",
+    "category": "Protista",
     "symbol": "Ap",
-    "type": "Protist",
+    "type": "Protista",
     "level1_basic": {
       "habitat": "Freshwater",
       "location": "Global",
-      "description": "A single-celled eukaryotic organism that moves and feeds by extending temporary projections called pseudopodia.",
+      "description": "A single-celled eukaryotic organism that moves using pseudopodia.",
       "summary": "Single-cell eukaryote, shapeshifter."
     },
     "level2_biological": {
@@ -168,7 +228,27 @@ export const taxonomyData = {
       "size": "200–600 μm",
       "components": ["Pseudopods", "Contractile vacuole", "Nucleus"]
     },
-    "image": "images/taxa-protist.png" // Path placeholder
+    "image": "images/taxa-protist.png"
+  },
+  "pro_paramecium": {
+    "id": 1502,
+    "name": "Paramecium",
+    "scientificName": "Paramecium caudatum",
+    "category": "Protista",
+    "symbol": "Pc",
+    "type": "Protista",
+    "level1_basic": {
+      "habitat": "Stagnant Water",
+      "location": "Global",
+      "description": "A genus of unicellular ciliated protozoa, commonly studied as a representative of the ciliate group.",
+      "summary": "Ciliated single-cell eukaryote."
+    },
+    "level2_biological": {
+      "composition": "Ciliate",
+      "size": "120–330 μm",
+      "components": ["Cilia", "Oral groove", "Macronucleus"]
+    },
+    "image": "images/taxa-paramecium.png"
   },
   "ani_elephant": {
     "id": 1104,
@@ -176,11 +256,11 @@ export const taxonomyData = {
     "scientificName": "Loxodonta africana",
     "category": "Mammalia",
     "symbol": "Ae",
-    "type": "Animal",
+    "type": "Animalia",
     "level1_basic": {
       "habitat": "Savanna / Forests",
       "location": "Africa",
-      "description": "The largest land animal on Earth. Known for its cognitive ability, complex social structures, and distinctive trunk.",
+      "description": "The largest land animal on Earth. Known for its cognitive ability and complex social structures.",
       "summary": "Largest land mammal, highly social."
     },
     "level2_biological": {
@@ -189,45 +269,5 @@ export const taxonomyData = {
       "components": ["Trunk", "Tusks", "Large ears"]
     },
     "image": "images/taxa-elephant.png"
-  },
-  "bac_cyano": {
-    "id": 1402,
-    "name": "Cyanobacteria",
-    "scientificName": "Cyanobacteria",
-    "category": "Bacteria",
-    "symbol": "Cy",
-    "type": "Monera",
-    "level1_basic": {
-      "habitat": "Aquatic environments",
-      "location": "Global",
-      "description": "Photosynthetic bacteria that produce oxygen as a byproduct. Played a major role in the oxygenation of Earth's atmosphere.",
-      "summary": "Oxygen-producing bacteria."
-    },
-    "level2_biological": {
-      "composition": "Prokaryotic, Photosynthetic",
-      "size": "0.5–60 μm",
-      "components": ["Thylakoids", "Phycobilisomes", "Peptidoglycan"]
-    },
-    "image": "images/taxa-bacteria.png"
-  },
-  "pla_sequoia": {
-    "id": 1202,
-    "name": "Giant Sequoia",
-    "scientificName": "Sequoiadendron giganteum",
-    "category": "Pinopsida",
-    "symbol": "Gs",
-    "type": "Plantae",
-    "level1_basic": {
-      "habitat": "Mountain Slopes",
-      "location": "California, USA",
-      "description": "One of the most massive tree species on Earth. Known for its thick, fire-resistant reddish-brown bark.",
-      "summary": "Massive coniferous tree."
-    },
-    "level2_biological": {
-      "composition": "Gymnosperm, Woody",
-      "size": "50–85 meters",
-      "components": ["Thick bark", "Seed cones", "Scale-like leaves"]
-    },
-    "image": "images/taxa-plantae.png"
   }
 };
